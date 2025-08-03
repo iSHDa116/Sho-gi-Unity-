@@ -9,9 +9,11 @@ public class TileCtrler : MonoBehaviour
     int z;
     [SerializeField] Material tileColor;
     [SerializeField] Material highLightMaterial;
+    Transform surface;
     // Start is called before the first frame update
     void Start()
     {
+        surface = transform.Find("Surface");
         x = Mathf.RoundToInt(this.transform.position.x);
         z = Mathf.RoundToInt(this.transform.position.z);
     }
@@ -19,6 +21,7 @@ public class TileCtrler : MonoBehaviour
     // Update is called once per frame
     void OnMouseDown()
     {
+        Debug.Log(this.gameObject.name);
         if (PieceCtrler.selectedPiece != null)
         {
             PieceCtrler.selectedPiece.Move(new Vector3(x, PieceCtrler.setY, z)); //マスに移動
@@ -29,10 +32,10 @@ public class TileCtrler : MonoBehaviour
 
     public void HighLightTile()
     {
-        this.GetComponent<Renderer>().material = highLightMaterial;
+        surface.GetComponent<Renderer>().material = highLightMaterial;
     }
     public void ResetTileColor()
     {
-        this.GetComponent<Renderer>().material = tileColor;
+        surface.GetComponent<Renderer>().material = tileColor;
     }
 }

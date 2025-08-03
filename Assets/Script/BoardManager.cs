@@ -9,7 +9,7 @@ public class BoardManager : MonoBehaviour
 
     [SerializeField] GameObject tilePrefab;
     [SerializeField] GameManager gm;
-    [SerializeField] TileCtrler tileCtrler;
+    //[SerializeField] TileCtrler tileCtrler;
     // Start is called before the first frame update
     void Start()
     {

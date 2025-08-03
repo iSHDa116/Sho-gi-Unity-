@@ -10,6 +10,9 @@ public class PawnCtrler : PieceCtrler
     {
         List<Vector3> moves = new List<Vector3>();
 
+        if(pieceData == null)
+            Debug.LogError("pieceDataがnullです");
+
         int dir = (pieceData.playerType == PlayerType.Sente) ? 1 : -1;
 
         if (!BoardManager.IsOutBoard(x, z + dir) && BoardManager.IsTileEmpty(x, z + dir) && !isPromoted)

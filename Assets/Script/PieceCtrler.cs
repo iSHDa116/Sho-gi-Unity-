@@ -20,24 +20,24 @@ public class PieceCtrler : MonoBehaviour
     //インスタンス化
     public Piece pieceData;
 
+    void Start()
+    {
+        GetComponent<BoxCollider>().size = new Vector3(0.027f, 0.04f, 0.03f);
+        if (pieceData == null)
+            Debug.LogWarning($"{gameObject.name}: pieceData はまだ設定されていません（Init前）");
+
+    }
     public void Init(Piece data)
     {
         pieceData = data;
-        Debug.Log($"{gameObject.name} の Init 完了: {pieceData.pieceType} {pieceData.playerType}");
+        x = Mathf.RoundToInt(this.transform.position.x);
+        z = Mathf.RoundToInt(this.transform.position.z);
+        Debug.Log($"{gameObject.name} の Init 完了: {pieceData.pieceType} {pieceData.playerType}_{x}_{z}");
 
-    }
-
-    void Start()
-    {
-        //pieceData = new Piece();
-        this.GetComponent<BoxCollider>().size = new Vector3(0.027f, 0.04f, 0.03f);
     }
 
     void OnMouseDown()
     {
-        x = Mathf.RoundToInt(this.transform.position.x);
-        z = Mathf.RoundToInt(this.transform.position.z);
-
         //もし同じ駒を押したら、選択を解除
         if (selectedPiece == this && isSelected)
         {
@@ -45,10 +45,9 @@ public class PieceCtrler : MonoBehaviour
             Debug.Log($"{this.gameObject.name}:選択解除/setY：{setY}");
             this.transform.position = new Vector3(x, setY, z); // 元の高さに戻す
             Debug.Log($"{gameObject.name}: 選択解除/setY={setY}");
-            return;
         }
         //別のコマが選ばれても選択を解除
-        if (selectedPiece != this && selectedPiece == null)
+        if (selectedPiece != null && selectedPiece != this)
         {
             selectedPiece.isSelected = false;
             selectedPiece.transform.position = new Vector3(x, setY, z);
@@ -57,6 +56,11 @@ public class PieceCtrler : MonoBehaviour
         // 自分を新しく選択す
         isSelected = true;
         selectedPiece = this; //前回の選択記録を破棄してからthisを代入
+
+        if (selectedPiece != null)
+            Debug.Log("選択中：" + selectedPiece);
+        else
+            Debug.LogError("コマが見つかりません(PieceCtrler.cs/69.58)");
 
         transform.position = new Vector3(x, selectY, z);
         Debug.Log($"{gameObject.name}: 選択");

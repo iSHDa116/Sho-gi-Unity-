@@ -6,7 +6,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     
-    [SerializeField] GameObject[] piecePrefab = new GameObject[8]; // 0-7 for pieces, 8 for King Gote
+    [SerializeField] GameObject[] piecePrefab = new GameObject[9]; // 0-7 for pieces, 8 for King Gote
     [SerializeField] BoardManager bm;
 
     public static GameManager Instance;
@@ -48,10 +48,10 @@ public class GameManager : MonoBehaviour
 
     void SpawnRookAndBishop()
     {
-        SpawnPiece(PieceType.Rook, PlayerType.Sente, 1, 1);
-        SpawnPiece(PieceType.Bishop, PlayerType.Sente, 7, 1);
-        SpawnPiece(PieceType.Rook, PlayerType.Gote, 7, 7);
-        SpawnPiece(PieceType.Bishop, PlayerType.Gote, 1, 7);
+        SpawnPiece(PieceType.Bishop, PlayerType.Sente, 1, 1);
+        SpawnPiece(PieceType.Rook, PlayerType.Sente, 7, 1);
+        SpawnPiece(PieceType.Bishop, PlayerType.Gote, 7, 7);
+        SpawnPiece(PieceType.Rook, PlayerType.Gote, 1, 7);
     }
 
     void SpawnBackPiece()
@@ -77,6 +77,13 @@ public class GameManager : MonoBehaviour
         {
             prefabIndex = 8;
         }
+        Debug.Log($"SpawnPiece: type={type}, prefabIndex={prefabIndex}");
+
+        if (piecePrefab[prefabIndex] == null)
+        {
+            Debug.LogError($"piecePrefab[{prefabIndex}] が null です！");
+            return;
+        }
 
         GameObject piece = Instantiate(piecePrefab[prefabIndex], new Vector3(x, PieceCtrler.setY, z), Quaternion.identity);
         piece.name = $"{player}.{type}_{x}_{z}";
@@ -88,36 +95,5 @@ public class GameManager : MonoBehaviour
         piece.GetComponent<PieceCtrler>().Init(piceData);
 
         BoardManager.boardGridInfo[x, z] = piece.transform;
-
-    }
-
-    public PieceCtrler selectPiece;
-    public void SelectPiece(PieceCtrler pieceCtrler)
-    {
-        Debug.Log($"SelectPiece呼び出し: {pieceCtrler.gameObject.name}");
-        Debug.Log($"pieceData: {pieceCtrler.pieceData}");
-        selectPiece = pieceCtrler;
-
-        for (int i = 0; i < selectPiece.GetCanMoveTiles().Count; i++)
-        {
-            var pos = selectPiece.GetCanMoveTiles()[i];
-            string tileName = $"Tile_{pos.x}_{pos.z}";
-            GameObject tileObject = GameObject.Find(tileName);
-
-            if (tileObject != null)
-            {
-                TileCtrler tile = tileObject.GetComponent<TileCtrler>();
-
-                if (tile != null)
-                {
-                    tile.HighLightTile();
-                }
-            }
-
-            else
-            {
-                Debug.LogWarning($"Tile {tileName} not found.");
-            }
-        }
     }
 }
