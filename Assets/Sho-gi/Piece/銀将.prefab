@@ -155,9 +155,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3859645138703911043}
-  - component: {fileID: 2678835274942998980}
-  - component: {fileID: 1182795451757165675}
   - component: {fileID: 2621973679156796084}
+  - component: {fileID: 7787747789369324874}
+  - component: {fileID: -5478639422616191356}
   m_Layer: 0
   m_Name: "\u9280\u5C06"
   m_TagString: Untagged
@@ -183,7 +183,7 @@ Transform:
   - {fileID: 4575742025607478568}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2678835274942998980
+--- !u!114 &2621973679156796084
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -192,10 +192,28 @@ MonoBehaviour:
   m_GameObject: {fileID: 9095902486268074668}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ba75b4b2bc384585ad915592bb12250, type: 3}
+  m_Script: {fileID: 11500000, guid: f4c796927875341c8ba38b4f2cc7471d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!65 &1182795451757165675
+  x: 0
+  y: 1
+  z: 0
+--- !u!114 &7787747789369324874
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9095902486268074668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39c940b1b8b3f41a99205d32c583278a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  x: 0
+  y: 1
+  z: 0
+--- !u!65 &-5478639422616191356
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -216,17 +234,3 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &2621973679156796084
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9095902486268074668}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0b771a128e49f4a24955b149767ba69d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  x: 0
-  z: 0
