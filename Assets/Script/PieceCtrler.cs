@@ -22,10 +22,9 @@ public class PieceCtrler : MonoBehaviour
 
     void Start()
     {
-        GetComponent<BoxCollider>().size = new Vector3(0.027f, 0.04f, 0.03f);
+        //Debug.Log("サイズ変わった？");
         if (pieceData == null)
             Debug.LogWarning($"{gameObject.name}: pieceData はまだ設定されていません（Init前）");
-
     }
     public void Init(Piece data)
     {
@@ -33,7 +32,6 @@ public class PieceCtrler : MonoBehaviour
         x = Mathf.RoundToInt(this.transform.position.x);
         z = Mathf.RoundToInt(this.transform.position.z);
         Debug.Log($"{gameObject.name} の Init 完了: {pieceData.pieceType} {pieceData.playerType}_{x}_{z}");
-
     }
 
     void OnMouseDown()
@@ -44,13 +42,14 @@ public class PieceCtrler : MonoBehaviour
             selectedPiece.isSelected = false;
             Debug.Log($"{this.gameObject.name}:選択解除/setY：{setY}");
             this.transform.position = new Vector3(x, setY, z); // 元の高さに戻す
-            Debug.Log($"{gameObject.name}: 選択解除/setY={setY}");
+            return;
         }
         //別のコマが選ばれても選択を解除
         if (selectedPiece != null && selectedPiece != this)
         {
             selectedPiece.isSelected = false;
             selectedPiece.transform.position = new Vector3(x, setY, z);
+            return;
         }
 
         // 自分を新しく選択す
@@ -60,28 +59,26 @@ public class PieceCtrler : MonoBehaviour
         if (selectedPiece != null)
             Debug.Log("選択中：" + selectedPiece);
         else
-            Debug.LogError("コマが見つかりません(PieceCtrler.cs/69.58)");
+            Debug.LogError("コマが見つかりません");
 
         transform.position = new Vector3(x, selectY, z);
-        Debug.Log($"{gameObject.name}: 選択");
 
-        //移動でいるますを取得して、そのマスを光らせる
+        //移動できるマスを取得して、そのマスを光らせる
         List<Vector3> moveTiles = GetCanMoveTiles();
-        Debug.LogWarning(moveTiles);
+        Debug.LogWarning($"移動できるマス：moveTiles");
 
-        for (int i = 0; i < moveTiles.Count; i++)
+        foreach(Vector3 pos in moveTiles)
         {
-            Vector3 pos = moveTiles[i];
             string tileName = $"Tile_{pos.x}_{pos.z}";
-            Debug.LogWarning(pos + tileName);
+            Debug.Log(pos + tileName);
 
             GameObject tileObj = GameObject.Find(tileName);
-            Transform tileChild = tileObj.transform.parent.GetChild(1);
+            Transform tileSurface = tileObj.transform.parent.GetChild(1);
 
-            Debug.Log("tileObj:" + tileObj);
+            Debug.Log("tileObj:" + tileObj + $"tileChild:{tileSurface}");
             if (tileObj != null)
             {
-                TileCtrler tileCtrler = tileChild.GetComponent<TileCtrler>();
+                TileCtrler tileCtrler = tileSurface.GetComponent<TileCtrler>();
                 Debug.Log(tileCtrler);
                 if (tileCtrler != null)
                 {
@@ -102,8 +99,12 @@ public class PieceCtrler : MonoBehaviour
 
     public void Move(Vector3 targetPos)
     {
-        x = (int)targetPos.x;
-        z = (int)targetPos.z;
+        //移動前に、駒の現在地情報をnullにする。これやらないと、データ上は駒の位置情報が残ります。
+        BoardManager.boardGridInfo[x, z] = null;
+        if (BoardManager.boardGridInfo[x, z] == null) Debug.Log($"boardGridInfo[{x}, {z}]をnullにしました。");
+
+        x = Mathf.RoundToInt(targetPos.x);
+        z = Mathf.RoundToInt(targetPos.z);
 
         this.transform.position = new Vector3(x, setY, z);
     }
@@ -115,7 +116,7 @@ public class PieceCtrler : MonoBehaviour
         //もし移動先に駒があった場合は、それが敵か否かの判定が必要
         if (target != null)
         {
-            Piece enemy = target.GetComponent<Piece>();
+            Piece enemy = GetComponent<PieceCtrler>().pieceData;
 
             //もし移動先の駒が敵 または　空だったら
             if (enemy.playerType != this.pieceData.playerType || enemy == null)
@@ -133,6 +134,4 @@ public class PieceCtrler : MonoBehaviour
             return false;
         }
     }
-
-
 }

@@ -77,7 +77,6 @@ public class GameManager : MonoBehaviour
         {
             prefabIndex = 8;
         }
-        Debug.Log($"SpawnPiece: type={type}, prefabIndex={prefabIndex}");
 
         if (piecePrefab[prefabIndex] == null)
         {
@@ -91,8 +90,10 @@ public class GameManager : MonoBehaviour
 
         if (player == PlayerType.Gote) piece.transform.Rotate(0, 180, 0);
 
-        Piece piceData = new Piece(type, player);
-        piece.GetComponent<PieceCtrler>().Init(piceData);
+        Piece pieceData = new Piece(type, player);
+        piece.GetComponent<PieceCtrler>().Init(pieceData);
+        piece.GetComponent<BoxCollider>().size = new Vector3(0.027f, 0.04f, 0.03f);
+
 
         BoardManager.boardGridInfo[x, z] = piece.transform;
     }

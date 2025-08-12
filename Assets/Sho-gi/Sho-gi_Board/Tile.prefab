@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 5583298489120404200}
   - component: {fileID: 5323985655013093437}
   - component: {fileID: 5755546653207612494}
-  - component: {fileID: 385788447252944194}
-  - component: {fileID: -5967973825436421962}
+  - component: {fileID: 743465841687821816}
+  - component: {fileID: 8870135782351621871}
   m_Layer: 0
   m_Name: Tile
   m_TagString: Untagged
@@ -86,7 +86,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &385788447252944194
+--- !u!65 &743465841687821816
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -105,9 +105,9 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 0.95, y: 1, z: 0.95}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &-5967973825436421962
+--- !u!114 &8870135782351621871
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

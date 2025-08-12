@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class PawnCtrler : PieceCtrler
 {
-
     public override List<Vector3> GetCanMoveTiles()
     {
         List<Vector3> moves = new List<Vector3>();
@@ -50,7 +49,6 @@ public class PawnCtrler : PieceCtrler
                 moves.Add(new Vector3(ax, setY, az));
             }
         }
-
         return moves;
     }
 }
