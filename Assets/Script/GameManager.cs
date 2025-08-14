@@ -66,7 +66,7 @@ public class GameManager : MonoBehaviour
         for (int x = 0; x < BoardManager.width; x++)
         {
             SpawnPiece(backRow[x], PlayerType.Sente, x, 0);
-            SpawnPiece(backRow[x], PlayerType.Gote, x, 7);
+            SpawnPiece(backRow[x], PlayerType.Gote, x, 8);
         }
     }
 

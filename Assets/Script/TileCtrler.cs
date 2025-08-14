@@ -43,7 +43,7 @@ public class TileCtrler : MonoBehaviour
     {
         surface.GetComponent<Renderer>().material = highLightMaterial;
     }
-    public void ResetTileColor()
+    public void ResetColor()
     {
         surface.GetComponent<Renderer>().material = tileColor;
     }

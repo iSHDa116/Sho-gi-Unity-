@@ -17,34 +17,27 @@ public class PawnCtrler : PieceCtrler
         Debug.Log("dir == " + dir);
         //Debug.Log($"現在地: ({x}, {z}) dir: {dir} => 移動先: {z + dir}");
 
-        if (!BoardManager.IsOutBoard(x, z+dir))
+
+        if (!isPromoted)
         {
-
-            if (!isPromoted)
-                {
-                    Vector3 forwardMove = new Vector3(x, setY, z + dir);
-                    moves.Add(forwardMove);
-                    Debug.Log($"{forwardMove}を追加しました");
-                }
-                else
-                {
-                    // 成った後の動き
-                    for (int i = -1; i <= 1; i++)
-                    {
-                        if (i == 0) continue; // 前進はすでに追加されている
-
-                        if (!BoardManager.IsOutBoard(x + i, z + dir) && BoardManager.IsTileEmpty(x + i, z + dir))
-                        {
-                            Vector3 sideMove = new Vector3(x + i, selectY, z + dir);
-                            moves.Add(sideMove);
-                        }
-                    }
-                }
-
+            Vector3 forwardMove = new Vector3(x, setY, z + dir);
+            moves.Add(forwardMove);
+            Debug.Log($"{forwardMove}を追加しました");
         }
         else
         {
-            Debug.LogError("PawnCtrler(18).リストにマスを追加できませんでした");
+            // 成った後の動き
+            foreach (Vector2Int d in GoldDirections)
+            {
+                int ax = x + d.x;
+                int az = z + d.y * dir;
+
+               // Debug.Log($"現在の座標：ax={ax},az={az}");
+                if (BoardManager.IsOutBoard(ax, az))
+                    continue;
+
+                moves.Add(DirectionMove(ax, az));
+            }
         }
 
         /*Vector3 attackdir = new Vector3(dir, selectY, dir);
