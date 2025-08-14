@@ -24,7 +24,6 @@ public class BoardManager : MonoBehaviour
             {
                 Vector3 position = new Vector3(x, 0, y);
                 Transform tile = Instantiate(tilePrefab, position, Quaternion.identity).transform;
-                boardGridInfo[x, y] = tile;
 
                 tile.name = "Tile_" + x + "_" + y;
                 tile.parent = transform;

@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public static bool isPlayer = true;
     
     [SerializeField] GameObject[] piecePrefab = new GameObject[9]; // 0-7 for pieces, 8 for King Gote
     [SerializeField] BoardManager bm;
@@ -41,8 +42,8 @@ public class GameManager : MonoBehaviour
     {
         for (int x = 0; x < BoardManager.width; x++)
         {
-            SpawnPiece(PieceType.Pawn, PlayerType.Sente, x, 3);
-            SpawnPiece(PieceType.Pawn, PlayerType.Gote, x, 5);
+            SpawnPiece(PieceType.Pawn, PlayerType.Sente, x, 2);
+            SpawnPiece(PieceType.Pawn, PlayerType.Gote, x, 6);
         }
     }
 
@@ -65,7 +66,7 @@ public class GameManager : MonoBehaviour
         for (int x = 0; x < BoardManager.width; x++)
         {
             SpawnPiece(backRow[x], PlayerType.Sente, x, 0);
-            SpawnPiece(backRow[x], PlayerType.Gote, x, 8);
+            SpawnPiece(backRow[x], PlayerType.Gote, x, 7);
         }
     }
 

@@ -5,6 +5,7 @@ using UnityEngine;
 public class TileCtrler : MonoBehaviour
 {
     int x;
+    float y = 0;
     int z;
     [SerializeField] Material tileColor;
     [SerializeField] Material highLightMaterial;
@@ -13,8 +14,11 @@ public class TileCtrler : MonoBehaviour
     void Start()
     {
         surface = transform.Find("Surface");
+        Debug.Log(surface.gameObject.name+"入りました");
         x = Mathf.RoundToInt(this.transform.position.x);
         z = Mathf.RoundToInt(this.transform.position.z);
+
+        this.transform.position = new Vector3(x, y, z);
     }
 
 
@@ -25,15 +29,13 @@ public class TileCtrler : MonoBehaviour
         Debug.Log(this.gameObject.name);
         if (PieceCtrler.selectedPiece != null)
         {
-            PieceCtrler.selectedPiece.Move(new Vector3(x, PieceCtrler.setY, z)); //マスに移動
+            Vector3 target = new Vector3(x, PieceCtrler.setY, z);
 
-            //移動先のマスに駒の位置情報を登録
-            BoardManager.boardGridInfo[x, z] = PieceCtrler.selectedPiece.transform;
-            if(BoardManager.boardGridInfo[x, z] != null)
-                Debug.Log($"boardGridInfo[{x}, {z}]に{PieceCtrler.selectedPiece}を追加しました");
+            if (PieceCtrler.selectedPiece.TryMoveTo(target))
+            {
+                PieceCtrler.selectedPiece.Move(new Vector3(x, PieceCtrler.setY, z)); //マスに移動
+            }
 
-            PieceCtrler.selectedPiece.isSelected = false; //選択を解除
-            PieceCtrler.selectedPiece = null; // 選択を解除
         }
     }
 
