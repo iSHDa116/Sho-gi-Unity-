@@ -6,7 +6,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static bool isPlayer = true;
-    
+
     [SerializeField] GameObject[] piecePrefab = new GameObject[9]; // 0-7 for pieces, 8 for King Gote
     [SerializeField] BoardManager bm;
 

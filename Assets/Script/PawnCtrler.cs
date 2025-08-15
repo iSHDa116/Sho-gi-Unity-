@@ -17,7 +17,6 @@ public class PawnCtrler : PieceCtrler
         Debug.Log("dir == " + dir);
         //Debug.Log($"現在地: ({x}, {z}) dir: {dir} => 移動先: {z + dir}");
 
-
         if (!isPromoted)
         {
             Vector3 forwardMove = new Vector3(x, setY, z + dir);
@@ -29,14 +28,27 @@ public class PawnCtrler : PieceCtrler
             // 成った後の動き
             foreach (Vector2Int d in GoldDirections)
             {
-                int ax = x + d.x;
-                int az = z + d.y * dir;
+                int dx = x + d.x;
+                int dz = z + d.y * dir;
 
-               // Debug.Log($"現在の座標：ax={ax},az={az}");
-                if (BoardManager.IsOutBoard(ax, az))
+                // Debug.Log($"現在の座標：ax={ax},az={az}");
+                if (BoardManager.IsOutBoard(dx, dz))
                     continue;
 
-                moves.Add(DirectionMove(ax, az));
+                Transform target = BoardManager.boardGridInfo[dx, dz];
+
+                if (target != null)
+                {
+                    Piece enemy = target.GetComponent<PieceCtrler>().pieceData;
+                    if (enemy.playerType != this.pieceData.playerType)
+                    {
+                        moves.Add(new Vector3(dx, setY, dz));
+                    }
+                }
+                else
+                {
+                    moves.Add(new Vector3(dx, setY, dz));
+                }
             }
         }
 

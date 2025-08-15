@@ -24,10 +24,23 @@ public class SilverCtrler : PieceCtrler
             int dx = x + d.x;
             int dz = z + d.y * dir;
 
-            if (BoardManager.boardGridInfo[dx, dz])
+            if (BoardManager.IsOutBoard(dx, dz))
                 continue;
 
-            moves.Add(DirectionMove(dx, dz));
+            Transform target = BoardManager.boardGridInfo[dx, dz];
+
+            if (target != null)
+            {
+                Piece enemy = target.GetComponent<PieceCtrler>().pieceData;
+                if (enemy.playerType != this.pieceData.playerType)
+                {
+                    moves.Add(new Vector3(dx, setY, dz));
+                }
+            }
+            else
+            {
+                moves.Add(new Vector3(dx, setY, dz));
+            }
         }
 
         return moves;

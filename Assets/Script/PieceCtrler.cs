@@ -2,13 +2,14 @@ using System.Collections.Generic;
 using UnityEditor;
 using System.Linq;
 using UnityEngine;
+using Unity.VisualScripting;
 
 public class PieceCtrler : MonoBehaviour
 {
     //位置情報
     public int x; //駒の現在のx座標
     public float selectY = 1.0f; //駒が選択された時のy座標(ちょっとだけ浮く)
-    public static float setY = 0.566f;//選択されていない時のy座標(定位置)
+    public static float setY = 0.57f;//選択されていない時のy座標(定位置)
     public int z; //駒の現在のz座標
     public Vector2Int[] GoldDirections = {
         new Vector2Int(-1,1),
@@ -35,6 +36,9 @@ public class PieceCtrler : MonoBehaviour
         //Debug.Log("サイズ変わった？");
         if (pieceData == null)
             Debug.LogWarning($"{gameObject.name}: pieceData はまだ設定されていません（Init前）");
+        //もしsoundの中が空っぽだったら、SoundCtrlを入れる。void Start()でやった方が安全そう
+        if (sound == null)
+            sound = FindObjectOfType<SoundCtrler>();
     }
     public void Init(Piece data)
     {
@@ -46,6 +50,7 @@ public class PieceCtrler : MonoBehaviour
 
     void OnMouseDown()
     {
+        //if(selectedPiece.pieceData.playerType == PlayerType.Sente)
         //もし同じ駒を押したら、選択を解除
         if (selectedPiece == this && isSelected)
         {
@@ -112,7 +117,7 @@ public class PieceCtrler : MonoBehaviour
     }
 
     public virtual List<Vector3> GetCanMoveTiles()
-    {
+    {        
         return new List<Vector3>();
     }
 
@@ -120,15 +125,18 @@ public class PieceCtrler : MonoBehaviour
     {
         //Tileの色を元の色に戻す
         ResetHighlightedTiles();
-        //移動前に、駒の現在地情報をnullにする。これやらないと、データ上は駒の位置情報が残ります。
-        BoardManager.boardGridInfo[x, z] = null;
-        if (BoardManager.boardGridInfo[x, z] == null)
-            Debug.Log($"boardGridInfo[{x}, {z}]をnullにしました。");
+        int oldX = x, oldZ = z; //元いた場所の座標を避難させる(新旧をわかりやすくするため)
+        int nx = Mathf.RoundToInt(targetPos.x); //移動先のx座標
+        int nz = Mathf.RoundToInt(targetPos.z); //移動先のz座標
 
-        x = Mathf.RoundToInt(targetPos.x);
-        z = Mathf.RoundToInt(targetPos.z);
+        if (BoardManager.IsOutBoard(nx, nz))
+        {
+            Debug.LogError($"x:{nx}/z:{nz}は盤外です!! (PieceCtrler.cs/133行目)");
+            return;
+        }
+
         //targetに、移動先のマスの情報を格納
-        Transform target = BoardManager.boardGridInfo[x, z];
+        Transform target = BoardManager.boardGridInfo[nx, nz];
         //もし移動先が空じゃなければ、ifの中身を実行
         if (target != null)
         {
@@ -137,46 +145,52 @@ public class PieceCtrler : MonoBehaviour
             //もし相手の駒が敵なら
             if (enemy.playerType != this.pieceData.playerType)
             {
-                //相手を削除
-                Destroy(target.gameObject);
-                sound.CaptureSound();
-                //相手がいた場所をnullにする(あまり必要ないかも...?まぁ、念の為)
-                BoardManager.boardGridInfo[x, z] = null;
+                target.GetComponent<PieceCtrler>().isCaptured = true;
+                target.GetComponent<PieceCtrler>().isInhand = true;
 
-                if (BoardManager.boardGridInfo == null)
-                {
-                    Debug.Log($"boardGridInfo[{x},{z}]を空にしました。");
-                }
+                //相手を非表示
+                target.gameObject.SetActive(false);
+                // 音を鳴らす
+                sound.CaptureSound();
+            }
+            else
+            {
+                Debug.LogWarning("移動先のマスに味方がいるため、指定した場所には進めません");
             }
         }
+        //移動前に、駒の現在地情報をnullにする。これやらないと、データ上は駒の位置情報が残ります。
+        BoardManager.boardGridInfo[oldX, oldZ] = null;
+        if (BoardManager.boardGridInfo[oldX, oldZ] == null)
+            Debug.Log($"boardGridInfo[{oldX}, {oldZ}]をnullにしました。");
 
         //移動
-        this.transform.position = new Vector3(x, setY, z);
-
-        if (sound == null)
-            sound = FindObjectOfType<SoundCtrler>();
-
+        this.transform.position = new Vector3(nx, setY, nz);
+        x = nx;
+        z = nz;
         sound.DropSound();
 
         //移動先に自分の駒を登録
-        BoardManager.boardGridInfo[x, z] = this.transform;
-        if (BoardManager.boardGridInfo[x, z] == this.transform)
+        BoardManager.boardGridInfo[nx, nz] = this.transform;
+        if (BoardManager.boardGridInfo[nx, nz] == this.transform)
         {
-            Debug.Log($"boardGridInfo[{x},{z}]に{this}を追加しました。");
+            Debug.Log($"boardGridInfo[{nx},{nz}]に{this}を追加しました。");
         }
 
-        //選択を解除する
+        // "成る"の判定
         Promoted();
+        //選択を解除する
         selectedPiece.isSelected = false; //選択を解除
         selectedPiece = null; // 選択を解除
+        GameManager.isPlayer = !GameManager.isPlayer;
     }
 
     //移動先の駒をとって良いかの判定
     public bool IsCanCapture(Vector3 vec)
     {
-        int x = Mathf.RoundToInt(vec.x);
-        int z = Mathf.RoundToInt(vec.z);
-        Transform target = BoardManager.boardGridInfo[x, z];
+        int vecX = Mathf.RoundToInt(vec.x);
+        int vecZ = Mathf.RoundToInt(vec.z);
+        //移動先の位置情報を取得
+        Transform target = BoardManager.boardGridInfo[vecX, vecZ];
         //もし移動先に駒があった場合は、それが敵か否かの判定が必要
         if (target != null)
         {
@@ -206,7 +220,6 @@ public class PieceCtrler : MonoBehaviour
 
         if (moveAble.Contains(target) && IsCanCapture(target))
         {
-
             Debug.Log($"x: {target.x} z:{target.z} に移動します");
             return true;
         }
@@ -257,7 +270,7 @@ public class PieceCtrler : MonoBehaviour
         }
     }
 
-    public Vector3 DirectionMove(int dx, int dz)
+    /*Vector3 DirectionMove(int dx, int dz)
     {
         Transform target = BoardManager.boardGridInfo[dx, dz];
 
@@ -274,6 +287,6 @@ public class PieceCtrler : MonoBehaviour
             return new Vector3(dx, setY, dz);
         }
 
-        return new Vector3();
-    }
+        //return ;
+    }*/
 }

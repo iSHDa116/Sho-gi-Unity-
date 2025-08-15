@@ -26,7 +26,15 @@ public class TileCtrler : MonoBehaviour
     // Update is called once per frame
     void OnMouseDown()
     {
-        Debug.Log(this.gameObject.name);
+        //Debug.Log(this.gameObject);
+        if (BoardManager.boardGridInfo[x, z] != null)
+        {
+            Debug.Log($"{this.gameObject.name}: {BoardManager.boardGridInfo[x, z].transform}");
+        }
+        else
+        {
+            Debug.Log($"{this.gameObject.name}: Null");
+        }
         if (PieceCtrler.selectedPiece != null)
         {
             Vector3 target = new Vector3(x, PieceCtrler.setY, z);
