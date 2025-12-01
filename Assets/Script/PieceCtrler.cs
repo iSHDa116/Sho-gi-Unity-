@@ -50,7 +50,8 @@ public class PieceCtrler : MonoBehaviour
 
     void OnMouseDown()
     {
-        //if(selectedPiece.pieceData.playerType == PlayerType.Sente)
+        
+
         //もし同じ駒を押したら、選択を解除
         if (selectedPiece == this && isSelected)
         {
@@ -83,7 +84,18 @@ public class PieceCtrler : MonoBehaviour
             Debug.Log("選択中：" + selectedPiece);
         else
             Debug.LogError("コマが見つかりません");
-
+        if((GameManager.isPlayer && selectedPiece.pieceData.playerType != PlayerType.Sente))
+        {
+            Debug.LogWarning("今は先手です");
+            selectedPiece = null;
+            return;
+        }
+        if(!GameManager.isPlayer && selectedPiece.pieceData.playerType != PlayerType.Gote)
+        {
+            Debug.LogWarning("今は後手です");
+            selectedPiece = null;
+            return;
+        }
         // 少しだけ浮かせる
         transform.position = new Vector3(x, selectY, z);
 
@@ -93,26 +105,28 @@ public class PieceCtrler : MonoBehaviour
 
         foreach (Vector3 pos in moveTiles)
         {
-            string tileName = $"Tile_{pos.x}_{pos.z}";
-            Debug.Log(pos + tileName);
+            int tx = Mathf.RoundToInt(pos.x);
+            int tz = Mathf.RoundToInt(pos.z);
 
+            string tileName = $"Tile_{tx}_{tz}";
             GameObject tileObj = GameObject.Find(tileName);
-            Transform tileSurface = tileObj.transform.parent.GetChild(1);
-
-            Debug.Log("tileObj:" + tileObj + $"tileChild:{tileSurface}");
-            if (tileObj != null)
+            if (tileObj == null)
             {
-                TileCtrler tileCtrler = tileObj.GetComponent<TileCtrler>();
-                //Debug.Log(tileCtrler);
-                if (tileCtrler != null)
-                {
-                    tileCtrler.HighLightTile();
-                }
-                else
-                {
-                    Debug.LogWarning("tileCtrlerがnullです");
-                }
+                Debug.LogWarning($"タイルが見つかりません: {tileName}");
+                continue;
             }
+
+            // 子参照はやめてコンポーネントに頼る
+            TileCtrler tile = tileObj.GetComponent<TileCtrler>();
+            if (tile == null)
+            {
+                Debug.LogWarning($"TileCtrlerが見つかりません: {tileName}");
+                continue;
+            }
+
+            tile.HighLightTile();
+            // ハイライト後に戻すために記録しておく（未実装なら省略）
+            // highlightedTiles.Add(tile);
         }
     }
 
@@ -141,15 +155,12 @@ public class PieceCtrler : MonoBehaviour
         if (target != null)
         {
             //移動先の駒を取得
-            Piece enemy = target.GetComponent<PieceCtrler>().pieceData;
+            PieceCtrler enemy = target.GetComponent<PieceCtrler>();
             //もし相手の駒が敵なら
-            if (enemy.playerType != this.pieceData.playerType)
+            if (enemy.pieceData.playerType != this.pieceData.playerType)
             {
-                target.GetComponent<PieceCtrler>().isCaptured = true;
-                target.GetComponent<PieceCtrler>().isInhand = true;
-
                 //相手を非表示
-                target.gameObject.SetActive(false);
+                HandManager.instance.Capture(enemy, enemy.pieceData.playerType);
                 // 音を鳴らす
                 sound.CaptureSound();
             }

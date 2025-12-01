@@ -14,7 +14,7 @@ public class TileCtrler : MonoBehaviour
     void Start()
     {
         surface = transform.Find("Surface");
-        Debug.Log(surface.gameObject.name+"入りました");
+        Debug.Log(surface.gameObject.name+"に入りました");
         x = Mathf.RoundToInt(this.transform.position.x);
         z = Mathf.RoundToInt(this.transform.position.z);
 
@@ -35,15 +35,35 @@ public class TileCtrler : MonoBehaviour
         {
             Debug.Log($"{this.gameObject.name}: Null");
         }
-        if (PieceCtrler.selectedPiece != null)
+
+        //駒が何も選択されていなければ、処理を中断。
+        if (PieceCtrler.selectedPiece == null) return;
+
+        PieceCtrler piece = GetComponent<PieceCtrler>();
+        if (PieceCtrler.selectedPiece.isInhand)
         {
-            Vector3 target = new Vector3(x, PieceCtrler.setY, z);
-
-            if (PieceCtrler.selectedPiece.TryMoveTo(target))
+            if (HandManager.instance.TryDrop(PieceCtrler.selectedPiece, x, z))
             {
-                PieceCtrler.selectedPiece.Move(new Vector3(x, PieceCtrler.setY, z)); //マスに移動
+                //GameManager.Instance.TurnChange(piece);
+                piece.isSelected = false;
+                PieceCtrler.selectedPiece = null;
+                return;
             }
+            else
+            {
+                Debug.LogWarning("このマスには打てません");
+            }
+        }
 
+        // 選択した駒を浮かす
+        Vector3 target = new Vector3(x, PieceCtrler.setY, z);
+        // クリックしたますが移動可能なら
+        if (PieceCtrler.selectedPiece.TryMoveTo(target))
+        {
+            //GameManager.Instance.TurnChange(piece);
+            PieceCtrler.selectedPiece.Move(new Vector3(x, PieceCtrler.setY, z)); //クリックしたマスに移動
+            UI.instance.TurnChangetext();
+            return;
         }
     }
 

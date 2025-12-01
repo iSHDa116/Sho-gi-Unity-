@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -14,8 +11,8 @@ public class GameManager : MonoBehaviour
 
     //シングルトンパターン・・・ゲーム全体で唯一存在するクラスを作る、デザインパターン。
     //どこからでもアクセスできる
-    //変数Instanceに自分自身を代入することで、駄隠喩したクラス(今回はGameManager)を探さず、直接呼び出せる
-    //クラスをstaticみたいに使える(staticはMonobehaviourを継承できないから、Unityにおいてはこちらを使うことが多い)
+    //変数Instanceに自分自身を代入することで、代入したクラス(今回はGameManager)を探さず、直接呼び出せる
+    //クラスをインスタンス化しなくても使える(staticはMonobehaviourを継承できないから、Unityにおいてはこちらを使うことが多い)
     void Awake()
     {
         if (Instance == null)
@@ -31,6 +28,12 @@ public class GameManager : MonoBehaviour
     {
         SpawnAllPiece();
     }
+
+    public bool IsSelectPieceTurn(PieceCtrler selectPiece)
+    {
+        return (isPlayer && selectPiece.pieceData.playerType == PlayerType.Gote);
+    }
+
     void SpawnAllPiece()
     {
         SpawnAllPawn();
