@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -8,6 +9,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] BoardManager bm;
 
     public static GameManager Instance;
+
+    [SerializeField] Camera cam;
+    [SerializeField] Transform pieceManager;
 
     //シングルトンパターン・・・ゲーム全体で唯一存在するクラスを作る、デザインパターン。
     //どこからでもアクセスできる
@@ -32,6 +36,13 @@ public class GameManager : MonoBehaviour
     public bool IsSelectPieceTurn(PieceCtrler selectPiece)
     {
         return (isPlayer && selectPiece.pieceData.playerType == PlayerType.Gote);
+    }
+
+    public void TurnChange()
+    {
+        isPlayer = !isPlayer;
+        UI.instance.TurnChangetext();
+        cam.transform.Rotate(0,0,180);
     }
 
     void SpawnAllPiece()
@@ -90,7 +101,7 @@ public class GameManager : MonoBehaviour
 
         GameObject piece = Instantiate(piecePrefab[prefabIndex], new Vector3(x, PieceCtrler.setY, z), Quaternion.identity);
         piece.name = $"{player}.{type}_{x}_{z}";
-        piece.transform.parent = transform;
+        piece.transform.SetParent(pieceManager);
 
         if (player == PlayerType.Gote) piece.transform.Rotate(0, 180, 0);
 

@@ -39,14 +39,15 @@ public class TileCtrler : MonoBehaviour
         //駒が何も選択されていなければ、処理を中断。
         if (PieceCtrler.selectedPiece == null) return;
 
-        PieceCtrler piece = GetComponent<PieceCtrler>();
+        //PieceCtrler piece = GetComponent<PieceCtrler>();
         if (PieceCtrler.selectedPiece.isInhand)
         {
             if (HandManager.instance.TryDrop(PieceCtrler.selectedPiece, x, z))
             {
                 //GameManager.Instance.TurnChange(piece);
-                piece.isSelected = false;
+                //piece.isSelected = false;
                 PieceCtrler.selectedPiece = null;
+                GameManager.Instance.TurnChange();
                 return;
             }
             else
@@ -60,9 +61,8 @@ public class TileCtrler : MonoBehaviour
         // クリックしたますが移動可能なら
         if (PieceCtrler.selectedPiece.TryMoveTo(target))
         {
-            //GameManager.Instance.TurnChange(piece);
             PieceCtrler.selectedPiece.Move(new Vector3(x, PieceCtrler.setY, z)); //クリックしたマスに移動
-            UI.instance.TurnChangetext();
+            GameManager.Instance.TurnChange();
             return;
         }
     }

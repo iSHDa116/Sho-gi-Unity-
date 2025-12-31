@@ -74,10 +74,11 @@ public class PieceCtrler : MonoBehaviour
             //選択を解除
             selectedPiece.isSelected = false;
             selectedPiece = null;
+            
             return;
         }
 
-        // 自分を新しく選択す
+        // 自分を新しく選択する
         isSelected = true;
         selectedPiece = this; //前回の選択記録を破棄してからthisを代入
         if (selectedPiece != null)
@@ -101,8 +102,14 @@ public class PieceCtrler : MonoBehaviour
 
         //移動できるマスを取得して、そのマスを光らせる
         List<Vector3> moveTiles = GetCanMoveTiles();
-        DebugTiles(moveTiles);
+        //DebugTiles(moveTiles);
+        // 駒をおける場所を検索
+        SearchTiles(moveTiles);
+    }
 
+    //駒をおけるマスを検索する関数
+    void SearchTiles(List<Vector3> moveTiles)
+    {
         foreach (Vector3 pos in moveTiles)
         {
             int tx = Mathf.RoundToInt(pos.x);
@@ -160,9 +167,11 @@ public class PieceCtrler : MonoBehaviour
             if (enemy.pieceData.playerType != this.pieceData.playerType)
             {
                 //相手を非表示
-                HandManager.instance.Capture(enemy, enemy.pieceData.playerType);
+                HandManager.instance.CaptureEnemy(enemy, enemy.pieceData.playerType);
                 // 音を鳴らす
                 sound.CaptureSound();
+                GetKing(enemy.pieceData);
+                
             }
             else
             {
@@ -178,7 +187,7 @@ public class PieceCtrler : MonoBehaviour
         this.transform.position = new Vector3(nx, setY, nz);
         x = nx;
         z = nz;
-        sound.DropSound();
+        GetComponent<AudioSource>().Play();
 
         //移動先に自分の駒を登録
         BoardManager.boardGridInfo[nx, nz] = this.transform;
@@ -186,13 +195,13 @@ public class PieceCtrler : MonoBehaviour
         {
             Debug.Log($"boardGridInfo[{nx},{nz}]に{this}を追加しました。");
         }
-
         // "成る"の判定
         Promoted();
+
         //選択を解除する
         selectedPiece.isSelected = false; //選択を解除
         selectedPiece = null; // 選択を解除
-        GameManager.isPlayer = !GameManager.isPlayer;
+
     }
 
     //移動先の駒をとって良いかの判定
@@ -206,18 +215,21 @@ public class PieceCtrler : MonoBehaviour
         if (target != null)
         {
             Piece enemy = target.GetComponent<PieceCtrler>().pieceData;
-            //もし移動先の駒が敵 または　空だったら
-            if (enemy.playerType != this.pieceData.playerType || enemy == null)
+            //もし移動先の駒が敵 またはマスが空だったら
+            if (enemy.playerType != this.pieceData.playerType)
             {
+                // 移動許可
                 return true;
             }
             else
             {
+                //移動不可
                 return false;
             }
         }
         else
         {
+            //移動許可
             return true;
         }
     }
@@ -227,7 +239,7 @@ public class PieceCtrler : MonoBehaviour
         if (selectedPiece == null) return false;
 
         List<Vector3> moveAble = selectedPiece.GetCanMoveTiles();
-        DebugTiles(moveAble);
+        //DebugTiles(moveAble);
 
         if (moveAble.Contains(target) && IsCanCapture(target))
         {
@@ -278,6 +290,14 @@ public class PieceCtrler : MonoBehaviour
                 this.isPromoted = true;
                 this.transform.Rotate(0, 0, 180);
             }
+        }
+    }
+
+    void GetKing(Piece piece)
+    {
+        if(piece.pieceType == PieceType.King)
+        {
+            Debug.Log("終了");
         }
     }
 
