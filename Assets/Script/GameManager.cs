@@ -5,11 +5,14 @@ public class GameManager : MonoBehaviour
 {
     public static bool isPlayer = true;
 
+    [Header("駒")]
     [SerializeField] GameObject[] piecePrefab = new GameObject[9]; // 0-7 for pieces, 8 for King Gote
+
+    [Header("インスタンス化")]
     [SerializeField] BoardManager bm;
 
     public static GameManager Instance;
-
+    [Header("その他")]
     [SerializeField] Camera cam;
     [SerializeField] Transform pieceManager;
 
@@ -30,14 +33,10 @@ public class GameManager : MonoBehaviour
     }
     void Start()
     {
+        bm.BoardCreate();
         SpawnAllPiece();
     }
-
-    public bool IsSelectPieceTurn(PieceCtrler selectPiece)
-    {
-        return (isPlayer && selectPiece.pieceData.playerType == PlayerType.Gote);
-    }
-
+    
     public void TurnChange()
     {
         isPlayer = !isPlayer;
@@ -99,7 +98,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        GameObject piece = Instantiate(piecePrefab[prefabIndex], new Vector3(x, PieceCtrler.setY, z), Quaternion.identity);
+        GameObject piece = Instantiate(piecePrefab[prefabIndex], new Vector3(x, PieceCtrler.defaultY, z), Quaternion.identity);
         piece.name = $"{player}.{type}_{x}_{z}";
         piece.transform.SetParent(pieceManager);
 

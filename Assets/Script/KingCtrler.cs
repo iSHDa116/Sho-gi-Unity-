@@ -22,8 +22,8 @@ public class KingCtrler : PieceCtrler
 
         foreach (Vector2Int d in Directions)
         {
-            int dx = x + d.x;
-            int dz = z + d.y;
+            int dx = thisX + d.x;
+            int dz = thisZ + d.y;
 
             if (BoardManager.IsOutBoard(dx, dz)) continue;
 
@@ -35,12 +35,12 @@ public class KingCtrler : PieceCtrler
 
                 if (enemy.playerType != this.pieceData.playerType)
                 {
-                    moves.Add(new Vector3(dx, setY, dz));
+                    moves.Add(new Vector3(dx, defaultY, dz));
                 }
             }
             else
             {
-                moves.Add(new Vector3(dx, setY, dz));
+                moves.Add(new Vector3(dx, defaultY, dz));
             }
         }
 

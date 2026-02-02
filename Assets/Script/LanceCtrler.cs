@@ -12,22 +12,22 @@ public class LanceCtrler : PieceCtrler
 
         if (!isPromoted)
         {
-            int nz = z + dir;
-            while (!BoardManager.IsOutBoard(x, nz))
+            int nz = thisZ + dir;
+            while (!BoardManager.IsOutBoard(thisX, nz))
             {
-                Transform target = BoardManager.boardGridInfo[x, nz];
+                Transform target = BoardManager.boardGridInfo[thisX, nz];
 
                 if (target != null)
                 {
                     Piece enemy = target.GetComponent<PieceCtrler>().pieceData;
                     if (enemy != null && enemy.playerType != this.pieceData.playerType)
                     {
-                        moves.Add(new Vector3(x, setY, nz));
+                        moves.Add(new Vector3(thisX, defaultY, nz));
                     }
                     break;
                 }
 
-                moves.Add(new Vector3(x, setY, nz));
+                moves.Add(new Vector3(thisX, defaultY, nz));
                 nz += dir;
 
             }
@@ -36,8 +36,8 @@ public class LanceCtrler : PieceCtrler
         {
             foreach (Vector2Int d in GoldDirections)
             {
-                int dx = x + d.x;
-                int dz = z + d.y * dir;
+                int dx = thisX + d.x;
+                int dz = thisZ + d.y * dir;
 
                 if (BoardManager.IsOutBoard(dx, dz))
                     continue;
@@ -49,12 +49,12 @@ public class LanceCtrler : PieceCtrler
 
                     if (enemy.playerType != this.pieceData.playerType)
                     {
-                        moves.Add(new Vector3(dx, setY, dz));
+                        moves.Add(new Vector3(dx, defaultY, dz));
                     }
                 }
                 else
                 {
-                    moves.Add(new Vector3(dx, setY, dz));
+                    moves.Add(new Vector3(dx, defaultY, dz));
                 }
             }
         }

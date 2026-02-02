@@ -12,25 +12,25 @@ public class GoldCtrler : PieceCtrler
 
         foreach (Vector2Int d in GoldDirections)
         {
-            int dx = x + d.x;
-            int dz = z + d.y * dir;
+            int dirX = thisX + d.x;
+            int dirZ = thisZ + d.y * dir;
 
-            Debug.Log($"現在の座標：ax={dx},az={dz}");
-            if (BoardManager.IsOutBoard(dx, dz))
+            Debug.Log($"現在の座標：ax={dirX},az={dirZ}");
+            if (BoardManager.IsOutBoard(dirX, dirZ))
                 continue;
-            Transform target = BoardManager.boardGridInfo[dx, dz];
+            Transform target = BoardManager.boardGridInfo[dirX, dirZ];
 
             if (target != null)
             {
                 Piece enemy = target.GetComponent<PieceCtrler>().pieceData;
                 if (enemy.playerType != this.pieceData.playerType)
                 {
-                    moves.Add(new Vector3(dx, setY, dz));
+                    moves.Add(new Vector3(dirX, defaultY, dirZ));
                 }
             }
             else
             {
-                moves.Add(new Vector3(dx, setY, dz));
+                moves.Add(new Vector3(dirX, defaultY, dirZ));
             }
         }
         return moves;

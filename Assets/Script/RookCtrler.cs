@@ -18,8 +18,8 @@ public class RookCtrler : PieceCtrler
 
         foreach (Vector2Int d in directions)
         {
-            int nx = x + d.x;
-            int nz = z + d.y;
+            int nx = thisX + d.x;
+            int nz = thisZ + d.y;
 
             while (!BoardManager.IsOutBoard(nx, nz))
             {
@@ -30,12 +30,12 @@ public class RookCtrler : PieceCtrler
                     Piece enemy = target.GetComponent<PieceCtrler>().pieceData;
                     if (enemy.playerType != this.pieceData.playerType)
                     {
-                        moves.Add(new Vector3(nx, setY, nz));
+                        moves.Add(new Vector3(nx, defaultY, nz));
                     }
                     break;
                 }
 
-                moves.Add(new Vector3(nx, setY, nz));
+                moves.Add(new Vector3(nx, defaultY, nz));
                 //必ず、movesに座標を入れてから + しないと、配列外が出てエラーになる
                 nx += d.x;
                 nz += d.y;
@@ -53,8 +53,8 @@ public class RookCtrler : PieceCtrler
 
             foreach (Vector2Int p in promDir)
             {
-                int px = x + p.x;
-                int pz = z + p.y;
+                int px = thisX + p.x;
+                int pz = thisZ + p.y;
 
                 if (BoardManager.IsOutBoard(px, pz)) continue;
 
@@ -65,13 +65,13 @@ public class RookCtrler : PieceCtrler
                     Piece enemy = target.GetComponent<PieceCtrler>().pieceData;
                     if (enemy.playerType != this.pieceData.playerType)
                     {
-                        moves.Add(new Vector3(px, setY, pz));
+                        moves.Add(new Vector3(px, defaultY, pz));
                     }
                     continue;
                 }
                 else
                 {
-                    moves.Add(new Vector3(px, setY, pz));
+                    moves.Add(new Vector3(px, defaultY, pz));
                 }
             }
         }

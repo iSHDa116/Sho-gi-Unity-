@@ -44,8 +44,8 @@ public class TileCtrler : MonoBehaviour
         {
             if (HandManager.instance.TryDrop(PieceCtrler.selectedPiece, x, z))
             {
-                //GameManager.Instance.TurnChange(piece);
                 //piece.isSelected = false;
+                PieceCtrler.selectedPiece.Move(new Vector3(x, PieceCtrler.defaultY, z));
                 PieceCtrler.selectedPiece = null;
                 GameManager.Instance.TurnChange();
                 return;
@@ -57,11 +57,11 @@ public class TileCtrler : MonoBehaviour
         }
 
         // 選択した駒を浮かす
-        Vector3 target = new Vector3(x, PieceCtrler.setY, z);
+        Vector3 target = new Vector3(x, PieceCtrler.defaultY, z);
         // クリックしたますが移動可能なら
         if (PieceCtrler.selectedPiece.TryMoveTo(target))
         {
-            PieceCtrler.selectedPiece.Move(new Vector3(x, PieceCtrler.setY, z)); //クリックしたマスに移動
+            PieceCtrler.selectedPiece.Move(new Vector3(x, PieceCtrler.defaultY, z)); //クリックしたマスに移動
             GameManager.Instance.TurnChange();
             return;
         }

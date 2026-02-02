@@ -21,8 +21,8 @@ public class SilverCtrler : PieceCtrler
 
         foreach (Vector2Int d in directions)
         {
-            int dx = x + d.x;
-            int dz = z + d.y * dir;
+            int dx = thisX + d.x;
+            int dz = thisZ + d.y * dir;
 
             if (BoardManager.IsOutBoard(dx, dz))
                 continue;
@@ -34,12 +34,12 @@ public class SilverCtrler : PieceCtrler
                 Piece enemy = target.GetComponent<PieceCtrler>().pieceData;
                 if (enemy.playerType != this.pieceData.playerType)
                 {
-                    moves.Add(new Vector3(dx, setY, dz));
+                    moves.Add(new Vector3(dx, defaultY, dz));
                 }
             }
             else
             {
-                moves.Add(new Vector3(dx, setY, dz));
+                moves.Add(new Vector3(dx, defaultY, dz));
             }
         }
 

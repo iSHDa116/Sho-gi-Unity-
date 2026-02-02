@@ -16,12 +16,13 @@ public class KnightCtrler : PieceCtrler
 
         int dir = (this.pieceData.playerType == PlayerType.Sente) ? 1 : -1;
 
-        if (!isPromoted)
+        //成っているなら
+        if (isPromoted)
         {
-            foreach (Vector2Int d in diretions)
+            foreach (Vector2Int gd in GoldDirections)
             {
-                int nx = x + d.x;
-                int nz = z + d.y * dir;
+                int nx = thisX + gd.x;
+                int nz = thisZ + gd.y * dir;
 
                 if (BoardManager.IsOutBoard(nx, nz))
                     continue;
@@ -32,21 +33,21 @@ public class KnightCtrler : PieceCtrler
                     Piece enemy = target.GetComponent<PieceCtrler>().pieceData;
                     if (enemy.playerType != this.pieceData.playerType)
                     {
-                        moves.Add(new Vector3(nx, setY, nz));
+                        moves.Add(new Vector3(nx, defaultY, nz));
                     }
                 }
                 else
                 {
-                    moves.Add(new Vector3(nx, setY, nz));
+                    moves.Add(new Vector3(nx, defaultY, nz));
                 }
             }
         }
         else
         {
-            foreach (Vector2Int gd in GoldDirections)
+            foreach (Vector2Int d in diretions)
             {
-                int nx = x + gd.x;
-                int nz = z + gd.y * dir;
+                int nx = thisX + d.x;
+                int nz = thisZ + d.y * dir;
 
                 if (BoardManager.IsOutBoard(nx, nz))
                     continue;
@@ -57,12 +58,12 @@ public class KnightCtrler : PieceCtrler
                     Piece enemy = target.GetComponent<PieceCtrler>().pieceData;
                     if (enemy.playerType != this.pieceData.playerType)
                     {
-                        moves.Add(new Vector3(nx, setY, nz));
+                        moves.Add(new Vector3(nx, defaultY, nz));
                     }
                 }
                 else
                 {
-                    moves.Add(new Vector3(nx, setY, nz));
+                    moves.Add(new Vector3(nx, defaultY, nz));
                 }
             }
         }

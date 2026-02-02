@@ -6,26 +6,27 @@ using Unity.VisualScripting;
 
 public class PieceCtrler : MonoBehaviour
 {
+    //インスタンス化
+    [Header("インスタンス化")]
+    [SerializeField] BoardManager boardManager;
+
     //位置情報
-    public int x; //駒の現在のx座標
-    public float selectY = 1.0f; //駒が選択された時のy座標(ちょっとだけ浮く)
-    public static float setY = 0.57f;//選択されていない時のy座標(定位置)
-    public int z; //駒の現在のz座標
-    public Vector2Int[] GoldDirections = {
-        new Vector2Int(-1,1),
-        new Vector2Int(0,1),
-        new Vector2Int(1,1),
-        new Vector2Int(-1,0),
-        new Vector2Int(1,0),
-        new Vector2Int(0,-1)
+    [Header("駒の位置情報")]
+    public int thisX; //駒の現在のx座標
+    public const float selectY = 1.0f; //駒が選択された時のy座標(ちょっとだけ浮く)
+    public const float defaultY = 0.57f;//選択されていない時のy座標(定位置)
+    public int thisZ; //駒の現在のz座標
+
+    // "金"の動き。頻出なので、使いまわせる様にここで定義
+    public readonly Vector2Int[] GoldDirections = {
+        new(-1,1),
+        new(0,1),
+        new(1,1),
+        new(-1,0),
+        new(1,0),
+        new(0,-1)
     };
 
-    //駒の状態
-    public bool isSelected = false; //駒が選択されているか否か
-    public bool isCaptured = false; //駒がとられているか否か
-    public bool isInhand = false; //駒が持ち駒か否か
-    public bool isPromoted = false; //駒が成っているか
-    public static PieceCtrler selectedPiece = null;
 
     //インスタンス化
     public Piece pieceData;
@@ -39,28 +40,39 @@ public class PieceCtrler : MonoBehaviour
         //もしsoundの中が空っぽだったら、SoundCtrlを入れる。void Start()でやった方が安全そう
         if (sound == null)
             sound = FindObjectOfType<SoundCtrler>();
+        
+        if(boardManager == null)
+        {
+            boardManager = FindObjectOfType<BoardManager>();
+        }
     }
+    // GameManager.csで駒のインスタンス化を行う際に使います。これをしないとエラーが起きます(原因不明です)
     public void Init(Piece data)
     {
         pieceData = data;
-        x = Mathf.RoundToInt(this.transform.position.x);
-        z = Mathf.RoundToInt(this.transform.position.z);
-        Debug.Log($"{gameObject.name} の Init 完了: {pieceData.pieceType} {pieceData.playerType}_{x}_{z}");
+        thisX = Mathf.RoundToInt(this.transform.position.x);
+        thisZ = Mathf.RoundToInt(this.transform.position.z);
+        Debug.Log($"{gameObject.name} の Init 完了: {pieceData.pieceType} {pieceData.playerType}_{thisX}_{thisZ}");
     }
+
+    //駒の状態
+    public bool isSelected = false; //駒が選択されているか否か
+    public bool isCaptured = false; //駒がとられているか否か
+    public bool isInhand = false; //駒が持ち駒か否か
+    public bool isPromoted = false; //駒が成っているか
+    public static PieceCtrler selectedPiece = null;
 
     void OnMouseDown()
     {
-        
-
         //もし同じ駒を押したら、選択を解除
         if (selectedPiece == this && isSelected)
         {
             //タイルの色を元の色に戻す
-            selectedPiece.ResetHighlightedTiles();
+            boardManager.ResetHighlightedTiles(this);
             selectedPiece.isSelected = false;
             selectedPiece = null;
-            Debug.Log($"{this.gameObject.name}:選択解除/setY：{setY},{isSelected}");
-            this.transform.position = new Vector3(x, setY, z); // 元の高さに戻す
+            Debug.Log($"{this.gameObject.name}:選択解除/setY：{defaultY},{isSelected}");
+            this.transform.position = new Vector3(transform.position.x, defaultY, transform.position.z); // 元の高さに戻す
 
             return;
         }
@@ -68,9 +80,9 @@ public class PieceCtrler : MonoBehaviour
         if (selectedPiece != null && selectedPiece != this)
         {
             //Tileの色を元の色に戻す
-            selectedPiece.ResetHighlightedTiles();
+            boardManager.ResetHighlightedTiles(this);
             // 高さを元の高さに戻す
-            selectedPiece.transform.position = new Vector3(selectedPiece.x, setY, selectedPiece.z);
+            selectedPiece.transform.position = new Vector3(transform.position.x, defaultY, transform.position.x);
             //選択を解除
             selectedPiece.isSelected = false;
             selectedPiece = null;
@@ -97,45 +109,16 @@ public class PieceCtrler : MonoBehaviour
             selectedPiece = null;
             return;
         }
-        // 少しだけ浮かせる
-        transform.position = new Vector3(x, selectY, z);
+
+        transform.position = new Vector3(thisX, selectY, thisZ);
 
         //移動できるマスを取得して、そのマスを光らせる
         List<Vector3> moveTiles = GetCanMoveTiles();
         //DebugTiles(moveTiles);
         // 駒をおける場所を検索
-        SearchTiles(moveTiles);
+        boardManager.SearchTiles(moveTiles);
     }
 
-    //駒をおけるマスを検索する関数
-    void SearchTiles(List<Vector3> moveTiles)
-    {
-        foreach (Vector3 pos in moveTiles)
-        {
-            int tx = Mathf.RoundToInt(pos.x);
-            int tz = Mathf.RoundToInt(pos.z);
-
-            string tileName = $"Tile_{tx}_{tz}";
-            GameObject tileObj = GameObject.Find(tileName);
-            if (tileObj == null)
-            {
-                Debug.LogWarning($"タイルが見つかりません: {tileName}");
-                continue;
-            }
-
-            // 子参照はやめてコンポーネントに頼る
-            TileCtrler tile = tileObj.GetComponent<TileCtrler>();
-            if (tile == null)
-            {
-                Debug.LogWarning($"TileCtrlerが見つかりません: {tileName}");
-                continue;
-            }
-
-            tile.HighLightTile();
-            // ハイライト後に戻すために記録しておく（未実装なら省略）
-            // highlightedTiles.Add(tile);
-        }
-    }
 
     public virtual List<Vector3> GetCanMoveTiles()
     {        
@@ -145,8 +128,8 @@ public class PieceCtrler : MonoBehaviour
     public void Move(Vector3 targetPos)
     {
         //Tileの色を元の色に戻す
-        ResetHighlightedTiles();
-        int oldX = x, oldZ = z; //元いた場所の座標を避難させる(新旧をわかりやすくするため)
+        boardManager.ResetHighlightedTiles(this);
+        int oldX = thisX, oldZ = thisZ; //元いた場所の座標を避難させる(新旧をわかりやすくするため)
         int nx = Mathf.RoundToInt(targetPos.x); //移動先のx座標
         int nz = Mathf.RoundToInt(targetPos.z); //移動先のz座標
 
@@ -178,15 +161,17 @@ public class PieceCtrler : MonoBehaviour
                 Debug.LogWarning("移動先のマスに味方がいるため、指定した場所には進めません");
             }
         }
-        //移動前に、駒の現在地情報をnullにする。これやらないと、データ上は駒の位置情報が残ります。
-        BoardManager.boardGridInfo[oldX, oldZ] = null;
-        if (BoardManager.boardGridInfo[oldX, oldZ] == null)
-            Debug.Log($"boardGridInfo[{oldX}, {oldZ}]をnullにしました。");
-
+        //元護摩じゃなければ、移動前に駒の現在地情報をnullにする。これやらないと、データ上は駒の位置情報が残ります。
+        if(!isInhand)
+        {
+            BoardManager.boardGridInfo[oldX, oldZ] = null;
+            if (BoardManager.boardGridInfo[oldX, oldZ] == null)
+                Debug.Log($"boardGridInfo[{oldX}, {oldZ}]をnullにしました。");
+        }
         //移動
-        this.transform.position = new Vector3(nx, setY, nz);
-        x = nx;
-        z = nz;
+        this.transform.position = new Vector3(nx, defaultY, nz);
+        thisX = nx;
+        thisZ = nz;
         GetComponent<AudioSource>().Play();
 
         //移動先に自分の駒を登録
@@ -201,7 +186,6 @@ public class PieceCtrler : MonoBehaviour
         //選択を解除する
         selectedPiece.isSelected = false; //選択を解除
         selectedPiece = null; // 選択を解除
-
     }
 
     //移動先の駒をとって良いかの判定
@@ -259,20 +243,7 @@ public class PieceCtrler : MonoBehaviour
         Debug.Log($"移動できるマス({move?.Count ?? 0})：{listStr}");
     }
 
-    void ResetHighlightedTiles()
-    {
-        foreach (var pos in selectedPiece.GetCanMoveTiles())
-        {
-            int tileX = Mathf.RoundToInt(pos.x);
-            int tileZ = Mathf.RoundToInt(pos.z);
 
-            Transform tile = BoardManager.boardGridInfo[tileX, tileZ];
-            string tileName = $"Tile_{tileX}_{tileZ}";
-            GameObject tileObj = GameObject.Find(tileName);
-
-            tileObj.GetComponent<TileCtrler>().ResetColor();
-        }
-    }
     void Promoted()
     {
         if (!this.isPromoted &&
