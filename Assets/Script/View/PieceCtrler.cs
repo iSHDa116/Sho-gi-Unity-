@@ -6,16 +6,29 @@ using Unity.VisualScripting;
 
 public class PieceCtrler : MonoBehaviour
 {
+    //ここから
+    public Piece pieceData;    //インスタンス化
+    public int thisX; //駒の現在のx座標
+    public const float selectY = 1.0f; //駒が選択された時のy座標(ちょっとだけ浮く)
+    public const float defaultY = 0.57f;//選択されていない時のy座標(定位置)
+    public int thisZ; //駒の現在のz座標
+
+    public virtual List<Vector2Int> GetCanMoveTiles()
+    {
+        return new List<Vector2Int>();
+    }
+
+    //ここまでが修正コードです
+
+
+
     //インスタンス化
     [Header("インスタンス化")]
     [SerializeField] BoardManager boardManager;
 
     //位置情報
     [Header("駒の位置情報")]
-    public int thisX; //駒の現在のx座標
-    public const float selectY = 1.0f; //駒が選択された時のy座標(ちょっとだけ浮く)
-    public const float defaultY = 0.57f;//選択されていない時のy座標(定位置)
-    public int thisZ; //駒の現在のz座標
+
 
     // "金"の動き。頻出なので、使いまわせる様にここで定義
     public readonly Vector2Int[] GoldDirections = {
@@ -28,8 +41,6 @@ public class PieceCtrler : MonoBehaviour
     };
 
 
-    //インスタンス化
-    public Piece pieceData;
     SoundCtrler sound;
 
     void Start()
@@ -79,10 +90,6 @@ public class PieceCtrler : MonoBehaviour
 
     }
 
-    public virtual List<Vector3> GetCanMoveTiles()
-    {        
-        return new List<Vector3>();
-    }
 
     public void Move(Vector3 targetPos)
     {
@@ -176,16 +183,16 @@ public class PieceCtrler : MonoBehaviour
         }
     }
 
-    public bool TryMoveTo(Vector3 target)
+    public bool TryMoveTo(Vector2Int target)
     {
         if (selectedPiece == null) return false;
 
-        List<Vector3> moveAble = selectedPiece.GetCanMoveTiles();
+        List<Vector2Int> moveAble = selectedPiece.GetCanMoveTiles();
         //DebugTiles(moveAble);
 
-        if (moveAble.Contains(target) && IsCanCapture(target))
+        if (moveAble.Contains(target) )
         {
-            Debug.Log($"x: {target.x} z:{target.z} に移動します");
+            Debug.Log($"x: {target.x}  に移動します");
             return true;
         }
         else
