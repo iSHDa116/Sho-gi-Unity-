@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static bool isPlayer = true;
+    public static PieceCtrler selectPiece = null;
 
     [Header("駒")]
     [SerializeField] GameObject[] piecePrefab = new GameObject[9]; // 0-7 for pieces, 8 for King Gote
@@ -36,7 +37,35 @@ public class GameManager : MonoBehaviour
         bm.BoardCreate();
         SpawnAllPiece();
     }
+
+    void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            // クリックされた場所を取得する
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            //駒がクリックされた時の処理
+            ClickPiece(ray);
+        }
+    }
     
+    void ClickPiece(Ray ray)
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit))
+        {
+            PieceCtrler piece = hit.collider.GetComponent<PieceCtrler>();
+            if (piece != null)
+            {
+                piece.SelectPiece();
+            }
+            else
+            {
+                Debug.LogError("piece is null");
+            }
+        }
+    }
+
     public void TurnChange()
     {
         isPlayer = !isPlayer;

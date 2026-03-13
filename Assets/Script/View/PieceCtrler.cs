@@ -60,65 +60,24 @@ public class PieceCtrler : MonoBehaviour
     public bool isCaptured = false; //駒がとられているか否か
     public bool isInhand = false; //駒が持ち駒か否か
     public bool isPromoted = false; //駒が成っているか
-    public static PieceCtrler selectedPiece = null;
+    public static PieceCtrler selectedPiece;
 
-    void OnMouseDown()
+    public void SelectPiece()
     {
-        //もし同じ駒を押したら、選択を解除
-        if (selectedPiece == this && isSelected)
+        // もし、選択中の駒がなければ
+        if (GameManager.selectPiece != this)
         {
-            //タイルの色を元の色に戻す
-            boardManager.ResetHighlightedTiles(this);
-            selectedPiece.isSelected = false;
-            selectedPiece = null;
-            Debug.Log($"{this.gameObject.name}:選択解除/setY：{defaultY},{isSelected}");
-            this.transform.position = new Vector3(transform.position.x, defaultY, transform.position.z); // 元の高さに戻す
-
-            return;
+            GameManager.selectPiece = this;
+            // 駒を少し浮かせる
+            transform.position = new Vector3(thisX, selectY, thisZ);
         }
-        //別のコマが選ばれても選択を解除
-        if (selectedPiece != null && selectedPiece != this)
-        {
-            //Tileの色を元の色に戻す
-            boardManager.ResetHighlightedTiles(this);
-            // 高さを元の高さに戻す
-            selectedPiece.transform.position = new Vector3(transform.position.x, defaultY, transform.position.x);
-            //選択を解除
-            selectedPiece.isSelected = false;
-            selectedPiece = null;
-            
-            return;
-        }
-
-        // 自分を新しく選択する
-        isSelected = true;
-        selectedPiece = this; //前回の選択記録を破棄してからthisを代入
-        if (selectedPiece != null)
-            Debug.Log("選択中：" + selectedPiece);
         else
-            Debug.LogError("コマが見つかりません");
-        if((GameManager.isPlayer && selectedPiece.pieceData.playerType != PlayerType.Sente))
         {
-            Debug.LogWarning("今は先手です");
-            selectedPiece = null;
-            return;
-        }
-        if(!GameManager.isPlayer && selectedPiece.pieceData.playerType != PlayerType.Gote)
-        {
-            Debug.LogWarning("今は後手です");
-            selectedPiece = null;
-            return;
+            transform.position = new Vector3(thisX, defaultY, thisZ);
+            GameManager.selectPiece = null;
         }
 
-        transform.position = new Vector3(thisX, selectY, thisZ);
-
-        //移動できるマスを取得して、そのマスを光らせる
-        List<Vector3> moveTiles = GetCanMoveTiles();
-        //DebugTiles(moveTiles);
-        // 駒をおける場所を検索
-        boardManager.SearchTiles(moveTiles);
     }
-
 
     public virtual List<Vector3> GetCanMoveTiles()
     {        
@@ -184,8 +143,7 @@ public class PieceCtrler : MonoBehaviour
         Promoted();
 
         //選択を解除する
-        selectedPiece.isSelected = false; //選択を解除
-        selectedPiece = null; // 選択を解除
+
     }
 
     //移動先の駒をとって良いかの判定
