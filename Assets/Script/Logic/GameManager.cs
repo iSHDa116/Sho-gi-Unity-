@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] GameObject[] piecePrefab = new GameObject[9]; // 0-7 for pieces, 8 for King Gote
 
     [Header("インスタンス化")]
-    [SerializeField] BoardView bm;
+    [SerializeField] BoardView boardView;
     Board board = new Board();
 
     public static GameManager Instance;
@@ -43,7 +43,7 @@ public class GameManager : MonoBehaviour
 
     void GameStart()
     {
-        bm.SetBoard();
+        boardView.SetBoard();
         currentPlayer = sentePlayer;
         currentPlayer.StartTurn();
     }

@@ -1,10 +1,10 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class BoardView : MonoBehaviour
 {
+
     public static int width = 9, depth = 9;
     public GameObject[,] boardTileObj = new GameObject[width, depth];
     [SerializeField] GameObject tilePrefab;
