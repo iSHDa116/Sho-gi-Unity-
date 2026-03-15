@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class KingCtrler : PieceCtrler
 {
-    public override List<Vector3> GetCanMoveTiles()
+    public override List<Vector2Int> GetCanMoveTiles()
     {
-        List<Vector3> moves = new List<Vector3>();
+        List<Vector2Int> moves = new List<Vector2Int>();
 
         Vector2Int[] Directions = {
             new Vector2Int(-1,1),
@@ -35,12 +35,12 @@ public class KingCtrler : PieceCtrler
 
                 if (enemy.playerType != this.pieceData.playerType)
                 {
-                    moves.Add(new Vector3(dx, defaultY, dz));
+                    moves.Add(new Vector2Int(dx, dz));
                 }
             }
             else
             {
-                moves.Add(new Vector3(dx, defaultY, dz));
+                moves.Add(new Vector2Int(dx, dz));
             }
         }
 

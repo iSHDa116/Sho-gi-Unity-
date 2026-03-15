@@ -50,16 +50,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecb7de1767a6e4e2e884570a913672be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  x: 0
-  selectY: 1
-  z: 0
-  GoldDirections:
-  - {x: -1, y: 1}
-  - {x: 0, y: 1}
-  - {x: 1, y: 1}
-  - {x: -1, y: 0}
-  - {x: 1, y: 0}
-  - {x: 0, y: -1}
+  thisX: 0
+  thisZ: 0
+  boardManager: {fileID: 0}
   isSelected: 0
   isCaptured: 0
   isInhand: 0
@@ -83,7 +76,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 0.027, y: 0.027, z: 0.027}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!82 &8053801081030858787
 AudioSource:

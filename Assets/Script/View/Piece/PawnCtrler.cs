@@ -10,7 +10,6 @@ public class PawnCtrler : PieceCtrler
         List<Vector2Int> moves = new();
 
         int dir = (pieceData.playerType == PlayerType.Sente) ? 1 : -1;
-
         int targetZ = thisZ + dir;
 
         if(targetZ >= 0 && targetZ < 9)
@@ -21,7 +20,6 @@ public class PawnCtrler : PieceCtrler
                 moves.Add(new Vector2Int(thisX, targetZ));
             }
         }
-
         return moves;
     }
 }

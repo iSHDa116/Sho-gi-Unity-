@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class RookCtrler : PieceCtrler
 {
-    public override List<Vector3> GetCanMoveTiles()
+    public override List<Vector2Int> GetCanMoveTiles()
     {
-        List<Vector3> moves = new List<Vector3>();
+        List<Vector2Int> moves = new ();
 
         Vector2Int[] directions = {
             new Vector2Int(0,1),
@@ -30,12 +30,12 @@ public class RookCtrler : PieceCtrler
                     Piece enemy = target.GetComponent<PieceCtrler>().pieceData;
                     if (enemy.playerType != this.pieceData.playerType)
                     {
-                        moves.Add(new Vector3(nx, defaultY, nz));
+                        moves.Add(new Vector2Int(nx, nz));
                     }
                     break;
                 }
 
-                moves.Add(new Vector3(nx, defaultY, nz));
+                moves.Add(new Vector2Int(nx, nz));
                 //必ず、movesに座標を入れてから + しないと、配列外が出てエラーになる
                 nx += d.x;
                 nz += d.y;
@@ -65,13 +65,13 @@ public class RookCtrler : PieceCtrler
                     Piece enemy = target.GetComponent<PieceCtrler>().pieceData;
                     if (enemy.playerType != this.pieceData.playerType)
                     {
-                        moves.Add(new Vector3(px, defaultY, pz));
+                        moves.Add(new Vector2Int(px, pz));
                     }
                     continue;
                 }
                 else
                 {
-                    moves.Add(new Vector3(px, defaultY, pz));
+                    moves.Add(new Vector2Int(px, pz));
                 }
             }
         }

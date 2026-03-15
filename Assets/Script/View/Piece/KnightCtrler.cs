@@ -10,9 +10,9 @@ public class KnightCtrler : PieceCtrler
         new Vector2Int(1, 2)
     };
 
-    public override List<Vector3> GetCanMoveTiles()
+    public override List<Vector2Int> GetCanMoveTiles()
     {
-        List<Vector3> moves = new List<Vector3>();
+        List<Vector2Int> moves = new List<Vector2Int>();
 
         int dir = (this.pieceData.playerType == PlayerType.Sente) ? 1 : -1;
 
@@ -33,12 +33,12 @@ public class KnightCtrler : PieceCtrler
                     Piece enemy = target.GetComponent<PieceCtrler>().pieceData;
                     if (enemy.playerType != this.pieceData.playerType)
                     {
-                        moves.Add(new Vector3(nx, defaultY, nz));
+                        moves.Add(new Vector2Int(nx, nz));
                     }
                 }
                 else
                 {
-                    moves.Add(new Vector3(nx, defaultY, nz));
+                    moves.Add(new Vector2Int(nx, nz));
                 }
             }
         }
@@ -58,12 +58,12 @@ public class KnightCtrler : PieceCtrler
                     Piece enemy = target.GetComponent<PieceCtrler>().pieceData;
                     if (enemy.playerType != this.pieceData.playerType)
                     {
-                        moves.Add(new Vector3(nx, defaultY, nz));
+                        moves.Add(new Vector2Int(nx, nz));
                     }
                 }
                 else
                 {
-                    moves.Add(new Vector3(nx, defaultY, nz));
+                    moves.Add(new Vector2Int(nx, nz));
                 }
             }
         }

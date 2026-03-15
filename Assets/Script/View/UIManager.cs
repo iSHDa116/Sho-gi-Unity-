@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UI : MonoBehaviour
+public class UIManager : MonoBehaviour
 {
     [SerializeField] Text turnText;
-    public static UI instance;
+    public static UIManager instance;
 
     void Awake()
     {

@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class LanceCtrler : PieceCtrler
 {
-    public override List<Vector3> GetCanMoveTiles()
+    public override List<Vector2Int> GetCanMoveTiles()
     {
-        List<Vector3> moves = new List<Vector3>();
+        List<Vector2Int> moves = new ();
 
         int dir = (this.pieceData.playerType == PlayerType.Sente) ? 1 : -1;
 
@@ -22,12 +22,12 @@ public class LanceCtrler : PieceCtrler
                     Piece enemy = target.GetComponent<PieceCtrler>().pieceData;
                     if (enemy != null && enemy.playerType != this.pieceData.playerType)
                     {
-                        moves.Add(new Vector3(thisX, defaultY, nz));
+                        moves.Add(new Vector2Int(thisX, nz));
                     }
                     break;
                 }
 
-                moves.Add(new Vector3(thisX, defaultY, nz));
+                moves.Add(new Vector2Int(thisX, nz));
                 nz += dir;
 
             }
@@ -49,12 +49,12 @@ public class LanceCtrler : PieceCtrler
 
                     if (enemy.playerType != this.pieceData.playerType)
                     {
-                        moves.Add(new Vector3(dx, defaultY, dz));
+                        moves.Add(new Vector2Int(dx, dz));
                     }
                 }
                 else
                 {
-                    moves.Add(new Vector3(dx, defaultY, dz));
+                    moves.Add(new Vector2Int(dx, dz));
                 }
             }
         }

@@ -4,13 +4,17 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     public static bool isPlayer = true;
-    public static PieceCtrler selectPiece = null;
+
+    public Player sentePlayer;
+    public Player gotePlayer;
+    Player currentPlayer;
 
     [Header("駒")]
     [SerializeField] GameObject[] piecePrefab = new GameObject[9]; // 0-7 for pieces, 8 for King Gote
 
     [Header("インスタンス化")]
-    [SerializeField] BoardManager bm;
+    [SerializeField] BoardView bm;
+    Board board = new Board();
 
     public static GameManager Instance;
     [Header("その他")]
@@ -34,110 +38,27 @@ public class GameManager : MonoBehaviour
     }
     void Start()
     {
-        bm.BoardCreate();
-        SpawnAllPiece();
+        GameStart();
     }
 
-    void Update()
+    void GameStart()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            // クリックされた場所を取得する
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            //駒がクリックされた時の処理
-            ClickPiece(ray);
-        }
+        bm.SetBoard();
+        currentPlayer = sentePlayer;
+        currentPlayer.StartTurn();
     }
-    
-    void ClickPiece(Ray ray)
+
+    void GameOver()
     {
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit))
-        {
-            PieceCtrler piece = hit.collider.GetComponent<PieceCtrler>();
-            if (piece != null)
-            {
-                piece.SelectPiece();
-            }
-            else
-            {
-                Debug.LogError("piece is null");
-            }
-        }
+        currentPlayer = (currentPlayer == sentePlayer) ? sentePlayer : gotePlayer;
+
+        currentPlayer.EndTurn();
     }
 
     public void TurnChange()
     {
         isPlayer = !isPlayer;
-        UI.instance.TurnChangetext();
-        cam.transform.Rotate(0,0,180);
-    }
-
-    void SpawnAllPiece()
-    {
-        SpawnAllPawn();
-        SpawnRookAndBishop();
-        SpawnBackPiece();
-    }
-
-    void SpawnAllPawn()
-    {
-        for (int x = 0; x < BoardManager.width; x++)
-        {
-            SpawnPiece(PieceType.Pawn, PlayerType.Sente, x, 2);
-            SpawnPiece(PieceType.Pawn, PlayerType.Gote, x, 6);
-        }
-    }
-
-    void SpawnRookAndBishop()
-    {
-        SpawnPiece(PieceType.Bishop, PlayerType.Sente, 1, 1);
-        SpawnPiece(PieceType.Rook, PlayerType.Sente, 7, 1);
-        SpawnPiece(PieceType.Bishop, PlayerType.Gote, 7, 7);
-        SpawnPiece(PieceType.Rook, PlayerType.Gote, 1, 7);
-    }
-
-    void SpawnBackPiece()
-    {
-        PieceType[] backRow = new PieceType[]
-        {
-            PieceType.Lance, PieceType.Knight, PieceType.SilverGeneral, PieceType.GoldGeneral,
-            PieceType.King, PieceType.GoldGeneral, PieceType.SilverGeneral, PieceType.Knight, PieceType.Lance
-        };
-
-        for (int x = 0; x < BoardManager.width; x++)
-        {
-            SpawnPiece(backRow[x], PlayerType.Sente, x, 0);
-            SpawnPiece(backRow[x], PlayerType.Gote, x, 8);
-        }
-    }
-
-    void SpawnPiece(PieceType type, PlayerType player, int x, int z)
-    {
-        int prefabIndex = (int)type;
-
-        if (type == PieceType.King && player == PlayerType.Gote)
-        {
-            prefabIndex = 8;
-        }
-
-        if (piecePrefab[prefabIndex] == null)
-        {
-            Debug.LogError($"piecePrefab[{prefabIndex}] が null です！");
-            return;
-        }
-
-        GameObject piece = Instantiate(piecePrefab[prefabIndex], new Vector3(x, PieceCtrler.defaultY, z), Quaternion.identity);
-        piece.name = $"{player}.{type}_{x}_{z}";
-        piece.transform.SetParent(pieceManager);
-
-        if (player == PlayerType.Gote) piece.transform.Rotate(0, 180, 0);
-
-        Piece pieceData = new Piece(type, player);
-        piece.GetComponent<PieceCtrler>().Init(pieceData);
-        piece.GetComponent<BoxCollider>().size = new Vector3(0.027f, 0.04f, 0.03f);
-
-
-        BoardManager.boardGridInfo[x, z] = piece.transform;
+        UIManager.instance.TurnChangetext();
+        cam.transform.Rotate(0, 0, 180);
     }
 }

@@ -18,30 +18,30 @@ public class BishopCtrler : PieceCtrler
         new Vector2Int(0, -1)
     };
 
-    public override List<Vector3> GetCanMoveTiles()
+    public override List<Vector2Int> GetCanMoveTiles()
     {
-        List<Vector3> moves = new List<Vector3>();
+        List<Vector2Int> moves = new List<Vector2Int>();
 
         foreach (Vector2Int d in directions)
         {
             int nx = thisX + d.x;
             int nz = thisZ + d.y;
 
-            while (!BoardManager.IsOutBoard(nx, nz))
+            while (!Board.IsOutBoard(nx, nz))
             {
-                Transform target = BoardManager.boardGridInfo[nx, nz];
+                PieceCtrler target = Board.boardPieceInfo[nx, nz];
 
                 if (target != null)
                 {
-                    Piece enemy = target.GetComponent<PieceCtrler>().pieceData;
+                    Piece enemy = target.pieceData;
                     if (enemy.playerType != this.pieceData.playerType)
                     {
-                        moves.Add(new Vector3(nx, defaultY, nz));
+                        moves.Add(new Vector2Int(nx, nz));
                     }
                     break;
                 }
 
-                moves.Add(new Vector3(nx, defaultY, nz));
+                moves.Add(new Vector2Int(nx, nz));
                 nx += d.x;
                 nz += d.y;
                 continue;
@@ -54,22 +54,22 @@ public class BishopCtrler : PieceCtrler
                 int px = thisX + p.x;
                 int pz = thisZ + p.y;
 
-                if (BoardManager.IsOutBoard(px, pz)) continue;
+                if (Board.IsOutBoard(px, pz)) continue;
 
-                Transform target = BoardManager.boardGridInfo[px, pz];
+                PieceCtrler target = Board.boardPieceInfo[px, pz];
 
                 if (target != null)
                 {
-                    Piece enemy = target.GetComponent<PieceCtrler>().pieceData;
+                    Piece enemy = target.pieceData;
                     if (enemy.playerType != this.pieceData.playerType)
                     {
-                        moves.Add(new Vector3(px, defaultY, pz));
+                        moves.Add(new Vector2Int(px, pz));
                     }
                     continue;
                 }
                 else
                 {
-                    moves.Add(new Vector3(px, defaultY, pz));
+                    moves.Add(new Vector2Int(px, pz));
                 }
             }
         }

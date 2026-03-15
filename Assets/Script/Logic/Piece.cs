@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //PieceTyoeで駒の種類を定義
-public enum PieceType { Pawn, Rook, Bishop, Lance, Knight, SilverGeneral, GoldGeneral, King }
+public enum PieceType {None=0, Pawn=1, Rook=2, Bishop=3, Lance=4, Knight=5, SilverGeneral=6, GoldGeneral=7, King=8 , Dragon=2,Horce=3}
 
 //PlayerTypeで先攻/後攻を定義
 public enum PlayerType { Sente, Gote }
