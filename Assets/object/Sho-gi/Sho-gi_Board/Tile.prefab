@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 5583298489120404200}
   - component: {fileID: 5323985655013093437}
   - component: {fileID: 5755546653207612494}
+  - component: {fileID: 7674177357853126000}
   - component: {fileID: 743465841687821816}
-  - component: {fileID: 8870135782351621871}
   m_Layer: 0
   m_Name: Tile
   m_TagString: Untagged
@@ -86,6 +86,22 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &7674177357853126000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3626150884866718253}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb7eb8f8e79984d0cb389521b91bd7a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  x: 0
+  z: 0
+  normalMaterial: {fileID: 2100000, guid: 3fb2f92c4972f441194012b19ce836ed, type: 2}
+  highlightMaterial: {fileID: 2100000, guid: 57a7d3e795ba143968975bda5bbefff2, type: 2}
 --- !u!65 &743465841687821816
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -107,20 +123,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.95, y: 1, z: 0.95}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8870135782351621871
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3626150884866718253}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 58af15474d7964e15bc9c0ef26ade55c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tileColor: {fileID: 2100000, guid: 3fb2f92c4972f441194012b19ce836ed, type: 2}
-  highLightMaterial: {fileID: 2100000, guid: 57a7d3e795ba143968975bda5bbefff2, type: 2}
 --- !u!1 &5575750202821540890
 GameObject:
   m_ObjectHideFlags: 0

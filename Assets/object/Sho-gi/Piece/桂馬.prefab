@@ -50,13 +50,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecb7de1767a6e4e2e884570a913672be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  thisX: 0
-  thisZ: 0
-  boardManager: {fileID: 0}
-  isSelected: 0
-  isCaptured: 0
-  isInhand: 0
-  isPromoted: 0
+  x: 0
+  z: 0
+  isSente: 0
+  isCapturedPiece: 0
+  type: 2
 --- !u!65 &-7684600658102666189
 BoxCollider:
   m_ObjectHideFlags: 0
